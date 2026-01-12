@@ -215,7 +215,7 @@ if st.session_state.feature_values is not None:
 
         # 兼容 RandomForest 二分类
         if isinstance(shap_values, list):
-            shap_vals = shap_values[1]
+            shap_vals = shap_values[1][0]  # ⭐ 核心修复点
             base_value = expected_value[1]
         else:
             shap_vals = shap_values
@@ -266,6 +266,7 @@ else:
         st.session_state.shap_plot_generated = False
         st.rerun()
 # 🟢 新增结束
+
 
 
 
