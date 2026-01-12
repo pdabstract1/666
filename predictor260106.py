@@ -10,31 +10,14 @@ st.set_page_config(
 #     """
 #     <style>
 #     .block-container {
-#         padding-top: 2rem;
-#         padding-left: 3rem;
-#         padding-right: 3rem;
+#         padding-top: 1rem;
+#         padding-left: 18rem;
+#         padding-right: 18rem;
 #     }
 #     </style>
 #     """,
 #     unsafe_allow_html=True
 # )
-
-
-# st.markdown(
-#     """
-#     <style>
-#     /* 页面主体 */
-#     .block-container {
-#         max-width: 1200px;
-#         margin: auto;
-#         padding: 1rem;
-#     }
-#     </style>
-#     """,
-#     unsafe_allow_html=True
-# )
-
-
 
 
 # 内容宽度
@@ -67,8 +50,6 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-
-
 
 # 导入 joblib 库，用于加载和保存机器学习模型
 import joblib
@@ -208,8 +189,6 @@ with st.form("prediction_form"):
 
     submitted = st.form_submit_button("Predict")
 
-
-
 # 🟡 在还未预测时，提示用户点击 Predict
 if not st.session_state.prediction_made:
     st.info("👉 请点击 **Predict** 按钮，生成预测结果")
@@ -268,7 +247,7 @@ if st.session_state.prediction_made:
     # 显示预测结果
     class_label = "患病" if st.session_state.predicted_class == 1 else "未患病 (0)"
     st.write(f"**预测类别:** {class_label}")
-    
+
     # 🟢 修改开始：仅显示类别为1的概率
     proba_class_1 = st.session_state.predicted_proba[1] * 100
     st.write(f"**患病概率:** {proba_class_1:.2f}%")
@@ -286,7 +265,7 @@ if st.session_state.prediction_made:
         explainer_shap = shap.TreeExplainer(model)
         # 计算 SHAP 值，用于解释模型的预测
         shap_values = explainer_shap.shap_values(pd.DataFrame([st.session_state.feature_values], columns=feature_names))
-  
+
         # # 根据预测类别显示 SHAP 强制图
         # plt.figure(figsize=(10, 6))
         # if st.session_state.predicted_class == 1:
@@ -298,15 +277,14 @@ if st.session_state.prediction_made:
         #                     pd.DataFrame([st.session_state.feature_values], columns=feature_names),
         #                     matplotlib=True, show=False)
 
-
         X_df = pd.DataFrame(
             [st.session_state.feature_values],
             columns=feature_names
         )
-        
+
         shap.force_plot(
-            explainer_shap.expected_value[1],      # 永远用 class 1
-            shap_values[:, :, 1],                  # 永远用 class 1
+            explainer_shap.expected_value[1],  # 永远用 class 1
+            shap_values[:, :, 1],  # 永远用 class 1
             X_df,
             matplotlib=True,
             show=False
@@ -349,12 +327,4 @@ if st.session_state.prediction_made:
         st.session_state.shap_plot_generated = False
         st.rerun()
 # 🟢 新增结束
-
-
-
-
-
-
-
-
 
