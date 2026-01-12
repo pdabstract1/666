@@ -312,8 +312,22 @@ if st.session_state.prediction_made:
             show=False
         )
 
-
         plt.savefig("shap_force_plot.png", bbox_inches='tight', dpi=1200)
+
+
+        ##
+        plt.figure()
+        shap.summary_plot(
+            shap_values,
+            X,
+            feature_names=feature_names,
+            show=False
+        )
+        plt.tight_layout()
+        plt.savefig("shap_summary.png", dpi=300)
+        plt.close()
+        
+        st.image("shap_summary.png", caption="SHAP summary")
         st.session_state.shap_plot_generated = True
     st.caption(
         f"SHAP 解释基于“患病（Class 1）”，模型预测患病概率为 {proba_class_1:.2f}%"
@@ -350,6 +364,7 @@ if st.session_state.prediction_made:
         st.session_state.shap_plot_generated = False
         st.rerun()
 # 🟢 新增结束
+
 
 
 
