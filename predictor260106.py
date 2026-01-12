@@ -23,15 +23,17 @@ st.set_page_config(
 # st.markdown(
 #     """
 #     <style>
+#     /* 页面主体 */
 #     .block-container {
-#         padding-top: 1rem;
-#         padding-left: 18rem;
-#         padding-right: 18rem;
+#         max-width: 1200px;
+#         margin: auto;
+#         padding: 1rem;
 #     }
 #     </style>
 #     """,
 #     unsafe_allow_html=True
 # )
+
 
 st.set_page_config(page_title="CRKP预测器", layout="wide")
 
@@ -348,6 +350,7 @@ if st.session_state.prediction_made:
         st.session_state.shap_plot_generated = False
         st.rerun()
 # 🟢 新增结束
+
 
 
 
