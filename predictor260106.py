@@ -24,8 +24,8 @@ st.markdown(
     <style>
     .block-container {
         padding-top: 1rem;
-        padding-left: 8rem;
-        padding-right: 8rem;
+        padding-left: 18rem;
+        padding-right: 18rem;
     }
     </style>
     """,
@@ -313,6 +313,7 @@ if st.session_state.prediction_made:
         st.session_state.shap_plot_generated = False
         st.rerun()
 # 🟢 新增结束
+
 
 
 
