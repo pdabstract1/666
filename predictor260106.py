@@ -35,7 +35,7 @@ st.set_page_config(
 # )
 
 
-st.set_page_config(page_title="CRKP预测器", layout="wide")
+
 
 # 内容宽度
 st.markdown(
@@ -350,6 +350,7 @@ if st.session_state.prediction_made:
         st.session_state.shap_plot_generated = False
         st.rerun()
 # 🟢 新增结束
+
 
 
 
