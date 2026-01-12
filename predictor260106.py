@@ -190,33 +190,43 @@ if st.session_state.prediction_made:
     # 显示建议
     st.write(st.session_state.advice)
 
-    # SHAP 解释
-    st.subheader("SHAP 力解释图")
+  # SHAP 解释
+st.subheader("SHAP 力解释图")
 
-    if not st.session_state.shap_plot_generated:
-        explainer_shap = shap.TreeExplainer(model)
+if not st.session_state.shap_plot_generated:
+    explainer_shap = shap.TreeExplainer(model)
 
-        X_input = pd.DataFrame(
-            [st.session_state.feature_values],
-            columns=feature_names
-        )
+    X_input = pd.DataFrame(
+        [st.session_state.feature_values],
+        columns=feature_names
+    )
 
-        shap_values = explainer_shap.shap_values(X_input)
+    shap_values = explainer_shap.shap_values(X_input)
 
-        plt.figure(figsize=(10, 6))
+    # ✅ 关键：兼容所有 SHAP 返回格式
+    if isinstance(shap_values, list):
+        # 二分类（list），永远取阳性类
+        shap_vals_to_plot = shap_values[1]
+        expected_value = explainer_shap.expected_value[1]
+    else:
+        # 新版 SHAP：已经是阳性类
+        shap_vals_to_plot = shap_values
+        expected_value = explainer_shap.expected_value
 
-        # ✅ 永远解释“阳性类（class=1）”
-        shap.force_plot(
-            explainer_shap.expected_value[1],
-            shap_values[1],
-            X_input,
-            matplotlib=True,
-            show=False
-        )
+    plt.figure(figsize=(10, 6))
 
-        plt.savefig("shap_force_plot.png", bbox_inches="tight", dpi=300)
-        st.session_state.shap_plot_generated = True
-        
+    shap.force_plot(
+        expected_value,
+        shap_vals_to_plot,
+        X_input,
+        matplotlib=True,
+        show=False
+    )
+
+    plt.savefig("shap_force_plot.png", bbox_inches="tight", dpi=300)
+    st.session_state.shap_plot_generated = True
+
+    
     # 显示已保存的 SHAP 图
     st.image("shap_force_plot.png", caption='SHAP 力解释图')
 
@@ -248,6 +258,7 @@ if st.session_state.prediction_made:
         st.session_state.shap_plot_generated = False
         st.rerun()
 # 🟢 新增结束
+
 
 
 
