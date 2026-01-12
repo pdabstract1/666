@@ -127,8 +127,10 @@ if not st.session_state.prediction_made:
 if submitted:
     # 处理输入数据并进行预测
     feature_values = [X1, X10, X11, X18, X29, X31, X33]  # 将用户输入的特征值存入列表
-    features = np.array([feature_values])  # 将特征转换为 NumPy 数组，适用于模型输入
-
+    # features = np.array([feature_values])  # 将特征转换为 NumPy 数组，适用于模型输入
+    # ✅ 转成 DataFrame 并加列名
+    features_df = pd.DataFrame([feature_values], columns=feature_names)
+    
     # 预测类别（0：无败血症，1：有败血症）
     predicted_class = model.predict(features)[0]
     # 预测类别的概率
@@ -139,7 +141,7 @@ if submitted:
     st.session_state.predicted_class = predicted_class
     st.session_state.predicted_proba = predicted_proba
     st.session_state.feature_values = feature_values
-    st.session_state.features = features
+    st.session_state.features = features_df
 
     # 根据预测结果生成建议
     probability = predicted_proba[1] * 100  # 修改：使用类别1的概率
@@ -256,3 +258,4 @@ if st.session_state.prediction_made:
         st.session_state.shap_plot_generated = False
         st.rerun()
 # 🟢 新增结束
+
