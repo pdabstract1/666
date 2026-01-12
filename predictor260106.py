@@ -32,6 +32,25 @@ if 'shap_plot_generated' not in st.session_state:
     st.session_state.shap_plot_generated = False
 # 🟢 新增结束
 
+st.markdown(
+    """
+    <style>
+    /* 只修改 form 里的提交按钮（Predict） */
+    div[data-testid="stForm"] button[kind="primary"] p {
+        color: red !important;
+        font-weight: 600;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# div[data-testid="stForm"] button[kind="primary"] p {
+#     color: red !important;
+#     font-size: 18px;
+#     font-weight: 700;
+# }
+
 # 加载训练好的随机森林模型（RF.pkl）
 model = joblib.load('RF.pkl')
 
@@ -258,6 +277,7 @@ if st.session_state.prediction_made:
         st.session_state.shap_plot_generated = False
         st.rerun()
 # 🟢 新增结束
+
 
 
 
