@@ -19,18 +19,53 @@ st.set_page_config(
 #     unsafe_allow_html=True
 # )
 
+
+# st.markdown(
+#     """
+#     <style>
+#     .block-container {
+#         padding-top: 1rem;
+#         padding-left: 18rem;
+#         padding-right: 18rem;
+#     }
+#     </style>
+#     """,
+#     unsafe_allow_html=True
+# )
+
+st.set_page_config(page_title="CRKP预测器", layout="wide")
+
+# 内容宽度
 st.markdown(
     """
     <style>
     .block-container {
-        padding-top: 1rem;
-        padding-left: 18rem;
-        padding-right: 18rem;
+        max-width: 1200px;
+        margin: auto;
+        padding: 1rem;
+    }
+
+    div[data-testid="column"] {
+        flex: 1 1 0%;
+        min-width: 0;
+    }
+
+    @media (max-width: 1024px) {
+        div[data-testid="column"] {
+            flex: 0 0 50%;
+        }
+    }
+
+    @media (max-width: 640px) {
+        div[data-testid="column"] {
+            flex: 0 0 100%;
+        }
     }
     </style>
     """,
     unsafe_allow_html=True
 )
+
 
 
 # 导入 joblib 库，用于加载和保存机器学习模型
@@ -313,14 +348,6 @@ if st.session_state.prediction_made:
         st.session_state.shap_plot_generated = False
         st.rerun()
 # 🟢 新增结束
-
-
-
-
-
-
-
-
 
 
 
