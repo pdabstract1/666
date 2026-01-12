@@ -169,9 +169,9 @@ if submitted:
     predicted_class = model.predict(features_df)[0]
     predicted_proba = model.predict_proba(features_df)[0]
     
-    # 保存到 session_state
-    st.session_state.features = features_df
-    st.session_state.feature_values = feature_values
+    # # 保存到 session_state
+    # st.session_state.features = features_df
+    # st.session_state.feature_values = feature_values
 
 
     # 🔴 新增开始：保存预测结果到 session state
@@ -179,7 +179,7 @@ if submitted:
     st.session_state.predicted_class = predicted_class
     st.session_state.predicted_proba = predicted_proba
     st.session_state.feature_values = feature_values
-    st.session_state.features = features
+    st.session_state.features = features_df
 
     # 根据预测结果生成建议
     probability = predicted_proba[1] * 100  # 修改：使用类别1的概率
@@ -296,6 +296,7 @@ if st.session_state.prediction_made:
         st.session_state.shap_plot_generated = False
         st.rerun()
 # 🟢 新增结束
+
 
 
 
