@@ -32,60 +32,6 @@ if 'shap_plot_generated' not in st.session_state:
     st.session_state.shap_plot_generated = False
 # 🟢 新增结束
 
-
-
-st.set_page_config(
-    page_title="CRKP预测器",
-    layout="wide"
-)
-
-# st.markdown(
-#     """
-#     <style>
-#     .block-container {
-#         padding-top: 1rem;
-#         padding-left: 18rem;
-#         padding-right: 18rem;
-#     }
-#     </style>
-#     """,
-#     unsafe_allow_html=True
-# )
-
-
-# 内容宽度
-st.markdown(
-    """
-    <style>
-    .block-container {
-        max-width: 1200px;
-        margin: auto;
-        padding: 1rem;
-    }
-
-    div[data-testid="column"] {
-        flex: 1 1 0%;
-        min-width: 0;
-    }
-
-    @media (max-width: 1024px) {
-        div[data-testid="column"] {
-            flex: 0 0 50%;
-        }
-    }
-
-    @media (max-width: 640px) {
-        div[data-testid="column"] {
-            flex: 0 0 100%;
-        }
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
-
-
 # 加载训练好的随机森林模型（RF.pkl）
 model = joblib.load('RF.pkl')
 
@@ -133,65 +79,44 @@ feature_names = [
 # Streamlit 用户界面
 st.title("CRKP预测器")  # 设置网页标题
 
-# # 🔴 新增开始：使用表单来组织输入，防止重新运行
-# with st.form("prediction_form"):
-#     st.subheader("请输入患者信息")
-#     # 🟢 新增结束
-
-#     # 呼吸频率：数值输入框
-#     X1 = st.number_input("X1:", min_value=-10, max_value=10, value=0)
-
-#     # 降钙素原：数值输入框
-#     X10 = st.number_input("X10:", min_value=-10, max_value=10, value=0)
-
-#     # 白细胞：数值输入框
-#     X11 = st.number_input("白细胞:", min_value=-10, max_value=10, value=0)
-
-#     # 黄染：分类选择框（0：否，1：是）
-#     X18 = st.selectbox("X18:", options=[0, 1], format_func=lambda x: "是" if x == 1 else "否")
-#     # YS = st.selectbox("黄染:", options=["NO", "YES"], format_func=lambda x: "是" if x == 1 else "否")
-
-#     # 发热：分类选择框（0：否，1：是）
-#     X29 = st.selectbox("发热:", options=[0, 1], format_func=lambda x: "是" if x == 1 else "否")
-#     # Fever = st.selectbox("发热:", options=["NO", "YES"], format_func=lambda x: "是" if x == 1 else "否")
-
-#     # # 降钙素原：数值输入框
-#     # PCT = st.number_input("降钙素原:", min_value=0.00, max_value=100.00, value=1.75)
-
-#     # 性别：分类选择框（0：否，1：是）
-#     X31 = st.selectbox("鼻塞:", options=[0, 1], format_func=lambda x: "是" if x == 1 else "否")
-#     # NC = st.selectbox("鼻塞:", options=["NO", "YES"], format_func=lambda x: "是" if x == 1 else "否")
-
-#     # 性别：分类选择框（0：否，1：是）
-#     X33 = st.selectbox("流产:", options=[0, 1], format_func=lambda x: "是" if x == 1 else "否")
-#     # AFT = st.selectbox("流产:", options=["NO", "YES"], format_func=lambda x: "是" if x == 1 else "否")
-
-#     # # 白细胞：数值输入框
-#     # WBC = st.number_input("白细胞:", min_value=0.00, max_value=120.00, value=25.27)
-#     # 🔴 新增开始：提交按钮
-#     submitted = st.form_submit_button("Predict")
-# # 🟢 新增结束
-
-
+# 🔴 新增开始：使用表单来组织输入，防止重新运行
 with st.form("prediction_form"):
     st.subheader("请输入患者信息")
+    # 🟢 新增结束
 
-    col1, col2, col3 = st.columns(3)
+    # 呼吸频率：数值输入框
+    X1 = st.number_input("X1:", min_value=-10, max_value=10, value=0)
 
-    with col1:
-        X1 = st.number_input("X1:", min_value=-10, max_value=10, value=0)
-        X10 = st.number_input("X10:", min_value=-10, max_value=10, value=0)
-        X11 = st.number_input("白细胞:", min_value=-10, max_value=10, value=0)
+    # 降钙素原：数值输入框
+    X10 = st.number_input("X10:", min_value=-10, max_value=10, value=0)
 
-    with col2:
-        X18 = st.selectbox("X18:", options=[0, 1], format_func=lambda x: "是" if x == 1 else "否")
-        X29 = st.selectbox("发热:", options=[0, 1], format_func=lambda x: "是" if x == 1 else "否")
+    # 白细胞：数值输入框
+    X11 = st.number_input("白细胞:", min_value=-10, max_value=10, value=0)
 
-    with col3:
-        X31 = st.selectbox("鼻塞:", options=[0, 1], format_func=lambda x: "是" if x == 1 else "否")
-        X33 = st.selectbox("流产:", options=[0, 1], format_func=lambda x: "是" if x == 1 else "否")
+    # 黄染：分类选择框（0：否，1：是）
+    X18 = st.selectbox("X18:", options=[0, 1], format_func=lambda x: "是" if x == 1 else "否")
+    # YS = st.selectbox("黄染:", options=["NO", "YES"], format_func=lambda x: "是" if x == 1 else "否")
 
+    # 发热：分类选择框（0：否，1：是）
+    X29 = st.selectbox("发热:", options=[0, 1], format_func=lambda x: "是" if x == 1 else "否")
+    # Fever = st.selectbox("发热:", options=["NO", "YES"], format_func=lambda x: "是" if x == 1 else "否")
+
+    # # 降钙素原：数值输入框
+    # PCT = st.number_input("降钙素原:", min_value=0.00, max_value=100.00, value=1.75)
+
+    # 性别：分类选择框（0：否，1：是）
+    X31 = st.selectbox("鼻塞:", options=[0, 1], format_func=lambda x: "是" if x == 1 else "否")
+    # NC = st.selectbox("鼻塞:", options=["NO", "YES"], format_func=lambda x: "是" if x == 1 else "否")
+
+    # 性别：分类选择框（0：否，1：是）
+    X33 = st.selectbox("流产:", options=[0, 1], format_func=lambda x: "是" if x == 1 else "否")
+    # AFT = st.selectbox("流产:", options=["NO", "YES"], format_func=lambda x: "是" if x == 1 else "否")
+
+    # # 白细胞：数值输入框
+    # WBC = st.number_input("白细胞:", min_value=0.00, max_value=120.00, value=25.27)
+    # 🔴 新增开始：提交按钮
     submitted = st.form_submit_button("Predict")
+# 🟢 新增结束
 
 # 🟡 在还未预测时，提示用户点击 Predict
 if not st.session_state.prediction_made:
