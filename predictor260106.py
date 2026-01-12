@@ -22,11 +22,10 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-    /* 控制整体内容最大宽度 */
     .block-container {
-        max-width: 1100px;
-        padding-top: 2rem;
-        padding-bottom: 2rem;
+        padding-top: 1rem;
+        padding-left: 3rem;
+        padding-right: 3rem;
     }
     </style>
     """,
@@ -314,6 +313,7 @@ if st.session_state.prediction_made:
         st.session_state.shap_plot_generated = False
         st.rerun()
 # 🟢 新增结束
+
 
 
 
