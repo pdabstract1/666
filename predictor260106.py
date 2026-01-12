@@ -132,9 +132,9 @@ if submitted:
     features_df = pd.DataFrame([feature_values], columns=feature_names)
     
     # 预测类别（0：无败血症，1：有败血症）
-    predicted_class = model.predict(features)[0]
+    predicted_class = model.predict(features_df)[0]
     # 预测类别的概率
-    predicted_proba = model.predict_proba(features)[0]
+    predicted_proba = model.predict_proba(features_df)[0]
 
     # 🔴 新增开始：保存预测结果到 session state
     st.session_state.prediction_made = True
@@ -258,4 +258,5 @@ if st.session_state.prediction_made:
         st.session_state.shap_plot_generated = False
         st.rerun()
 # 🟢 新增结束
+
 
