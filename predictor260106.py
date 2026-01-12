@@ -160,13 +160,27 @@ if submitted:
     st.success("预测完成！")
 # 🟢 新增结束
 
-# 🔴 新增开始：显示预测结果（如果存在）
-if st.session_state.prediction_made:
-    st.subheader("预测结果")
+# # 🔴 新增开始：显示预测结果（如果存在）
+# if st.session_state.prediction_made:
+#     st.subheader("预测结果")
 
+#     # 显示预测结果
+#     class_label = "患病 (1)" if st.session_state.predicted_class == 1 else "未患病 (0)"
+#     st.write(f"**预测类别:** {class_label}")
+    
+#     # 🟢 修改开始：仅显示类别为1的概率
+#     proba_class_1 = st.session_state.predicted_proba[1] * 100
+#     st.write(f"**患病概率:** {proba_class_1:.2f}%")
+#     # 🟢 修改结束
+
+    # 🔴 新增开始：显示预测结果（如果存在）
+if st.session_state.prediction_made:
+    # st.subheader("预测结果")
+    st.subheader("预测结果：")
+    
     # 显示预测结果
-    class_label = "患病 (1)" if st.session_state.predicted_class == 1 else "未患病 (0)"
-    st.write(f"**预测类别:** {class_label}")
+    class_label = "患病" if st.session_state.predicted_class == 1 else "未患病"
+    st.write(f"**** {class_label}")
     
     # 🟢 修改开始：仅显示类别为1的概率
     proba_class_1 = st.session_state.predicted_proba[1] * 100
@@ -231,4 +245,5 @@ if st.session_state.prediction_made:
         st.session_state.shap_plot_generated = False
         st.rerun()
 # 🟢 新增结束
+
 
