@@ -72,25 +72,29 @@ if st.session_state.prediction_made:
 # ==================== SHAP 解释 ====================
 st.subheader("SHAP 力解释图")
 if st.session_state.feature_values is not None and not st.session_state.shap_plot_generated:
+    
+    
     explainer = shap.TreeExplainer(model)
     X_input = pd.DataFrame([st.session_state.feature_values], columns=feature_names)
     shap_values = explainer.shap_values(X_input)
     expected_value = explainer.expected_value
-
-    # 二分类模型取阳性类
+    
+    # 二分类模型
     if isinstance(shap_values, list):
-        shap_vals_to_plot = shap_values[1][0]  # 1D array
+        shap_vals_to_plot = shap_values[1][0]  # ✅ 这里必须 [0] 取第一条样本
         base_value = expected_value[1]
     else:
         shap_vals_to_plot = shap_values[0]
         base_value = expected_value
-
+    
     shap_html = shap.plots.force(
         base_value,
         shap_vals_to_plot,
-        feature_names=feature_names
+        feature_names=feature_names,
+        matplotlib=False
     )
     st_shap(shap_html)
+
     st.session_state.shap_plot_generated = True
 elif st.session_state.feature_values is None:
     st.info("请先点击 Predict 查看 SHAP 解释")
@@ -100,3 +104,4 @@ if st.button("清除预测结果"):
     for key in ["prediction_made","predicted_class","predicted_proba","advice","shap_plot_generated","feature_values","features"]:
         st.session_state[key] = None
     st.experimental_rerun()
+
