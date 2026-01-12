@@ -189,20 +189,38 @@ if st.session_state.prediction_made:
         explainer_shap = shap.TreeExplainer(model)
         # 计算 SHAP 值，用于解释模型的预测
         shap_values = explainer_shap.shap_values(pd.DataFrame([st.session_state.feature_values], columns=feature_names))
+  
+        # # 根据预测类别显示 SHAP 强制图
+        # plt.figure(figsize=(10, 6))
+        # if st.session_state.predicted_class == 1:
+        #     shap.force_plot(explainer_shap.expected_value[1], shap_values[:, :, 1],
+        #                     pd.DataFrame([st.session_state.feature_values], columns=feature_names),
+        #                     matplotlib=True, show=False)
+        # else:
+        #     shap.force_plot(explainer_shap.expected_value[0], shap_values[:, :, 0],
+        #                     pd.DataFrame([st.session_state.feature_values], columns=feature_names),
+        #                     matplotlib=True, show=False)
 
-        # 根据预测类别显示 SHAP 强制图
-        plt.figure(figsize=(10, 6))
-        if st.session_state.predicted_class == 1:
-            shap.force_plot(explainer_shap.expected_value[1], shap_values[:, :, 1],
-                            pd.DataFrame([st.session_state.feature_values], columns=feature_names),
-                            matplotlib=True, show=False)
-        else:
-            shap.force_plot(explainer_shap.expected_value[0], shap_values[:, :, 0],
-                            pd.DataFrame([st.session_state.feature_values], columns=feature_names),
-                            matplotlib=True, show=False)
+
+        X_df = pd.DataFrame(
+            [st.session_state.feature_values],
+            columns=feature_names
+        )
+        
+        shap.force_plot(
+            explainer_shap.expected_value[1],      # 永远用 class 1
+            shap_values[:, :, 1],                  # 永远用 class 1
+            X_df,
+            matplotlib=True,
+            show=False
+        )
+
 
         plt.savefig("shap_force_plot.png", bbox_inches='tight', dpi=1200)
         st.session_state.shap_plot_generated = True
+    # st.caption(
+    #     f"SHAP 解释基于“患病（Class 1）”，模型预测患病概率为 {proba_class_1:.2f}%"
+    # )
 
     # 显示已保存的 SHAP 图
     st.image("shap_force_plot.png", caption='SHAP 力解释图')
@@ -235,4 +253,5 @@ if st.session_state.prediction_made:
         st.session_state.shap_plot_generated = False
         st.rerun()
 # 🟢 新增结束
+
 
