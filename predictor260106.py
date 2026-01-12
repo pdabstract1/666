@@ -77,7 +77,33 @@ feature_names = [
     "X33",  # 白细胞
 ]
 # Streamlit 用户界面
-st.title("CRKP预测器")  # 设置网页标题
+# st.title("CRKP预测器")  # 设置网页标题
+
+
+st.set_page_config(
+    page_title="CRKP预测器",
+    layout="centered",   # 👈 页面居中并变窄
+    initial_sidebar_state="collapsed"
+)
+
+st.markdown(
+    """
+    <style>
+    .block-container {
+        max-width: 900px;
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# max-width: 700px;   /* 很紧凑 */
+# max-width: 800px;   /* 推荐 */
+# max-width: 1000px;  /* 稍宽 */
+
+
 
 # 🔴 新增开始：使用表单来组织输入，防止重新运行
 with st.form("prediction_form"):
@@ -256,5 +282,6 @@ if st.session_state.prediction_made:
         st.session_state.shap_plot_generated = False
         st.rerun()
 # 🟢 新增结束
+
 
 
