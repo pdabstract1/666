@@ -32,6 +32,11 @@ if 'shap_plot_generated' not in st.session_state:
     st.session_state.shap_plot_generated = False
 # 🟢 新增结束
 
+# ===== 初始化 session_state（必须）=====
+if "feature_values" not in st.session_state:
+    st.session_state.feature_values = None
+
+
 # 加载训练好的随机森林模型（RF.pkl）
 model = joblib.load('RF.pkl')
 
@@ -191,44 +196,47 @@ if st.session_state.prediction_made:
     st.write(st.session_state.advice)
     
 
-# ===== SHAP 解释（最终稳妥版）=====
+# ===== SHAP 解释（最终可运行版）=====
 st.subheader("SHAP 力解释图")
 
-if not st.session_state.shap_plot_generated:
-    explainer_shap = shap.TreeExplainer(model)
+# ❗只有“已经预测过”才允许画 SHAP
+if st.session_state.feature_values is not None:
 
-    X_input = pd.DataFrame(
-        [st.session_state.feature_values],
-        columns=feature_names
-    )
+    if not st.session_state.shap_plot_generated:
+        explainer_shap = shap.TreeExplainer(model)
 
-    shap_values = explainer_shap.shap_values(X_input)
-    expected_value = explainer_shap.expected_value
+        X_input = pd.DataFrame(
+            [st.session_state.feature_values],
+            columns=feature_names
+        )
 
-    # 兼容所有 SHAP 返回结构
-    if isinstance(shap_values, list):
-        shap_vals_to_plot = shap_values[1]          # 阳性类
-        base_value = expected_value[1]
-    else:
-        shap_vals_to_plot = shap_values              # 已经是阳性
-        base_value = expected_value
+        shap_values = explainer_shap.shap_values(X_input)
+        expected_value = explainer_shap.expected_value
 
-    plt.figure(figsize=(10, 6))
-    shap.force_plot(
-        base_value,
-        shap_vals_to_plot,
-        X_input,
-        matplotlib=True,
-        show=False
-    )
+        # 兼容 RandomForest 二分类
+        if isinstance(shap_values, list):
+            shap_vals = shap_values[1]
+            base_value = expected_value[1]
+        else:
+            shap_vals = shap_values
+            base_value = expected_value
 
-    plt.savefig("shap_force_plot.png", bbox_inches="tight", dpi=300)
-    st.session_state.shap_plot_generated = True
+        plt.figure(figsize=(10, 6))
+        shap.force_plot(
+            base_value,
+            shap_vals,
+            X_input,
+            matplotlib=True,
+            show=False
+        )
 
+        plt.savefig("shap_force_plot.png", bbox_inches="tight", dpi=300)
+        st.session_state.shap_plot_generated = True
 
-    
-    # 显示已保存的 SHAP 图
-    st.image("shap_force_plot.png", caption='SHAP 力解释图')
+    st.image("shap_force_plot.png", caption="SHAP 力解释图")
+
+else:
+    st.info("请先点击 Predict 再查看 SHAP 解释")
 
     # # LIME 解释
     # st.subheader("LIME 解释")
@@ -258,6 +266,7 @@ if not st.session_state.shap_plot_generated:
         st.session_state.shap_plot_generated = False
         st.rerun()
 # 🟢 新增结束
+
 
 
 
