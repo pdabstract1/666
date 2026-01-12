@@ -87,7 +87,7 @@ if st.session_state.feature_values is not None and not st.session_state.shap_plo
     if isinstance(shap_values, list):
         # shap_values[1] 对应阳性类 (class 1)
         # [0] 取第一条样本，变成 1D
-        shap_vals_to_plot = shap_values[1][0]  # shape = (n_features,)
+        shap_vals_to_plot = shap_values[0]  # shape = (n_features,)
         base_value = expected_value[1]        # 标量
     else:
         shap_vals_to_plot = shap_values[0]
@@ -114,5 +114,6 @@ if st.button("清除预测结果"):
     for key in ["prediction_made","predicted_class","predicted_proba","advice","shap_plot_generated","feature_values","features"]:
         st.session_state[key] = None
     st.experimental_rerun()
+
 
 
