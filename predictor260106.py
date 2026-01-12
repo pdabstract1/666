@@ -196,10 +196,9 @@ if st.session_state.prediction_made:
     st.write(st.session_state.advice)
     
 
-# ===== SHAP 解释（最终可运行版）=====
+# ===== SHAP 解释（最终不再报错版）=====
 st.subheader("SHAP 力解释图")
 
-# ❗只有“已经预测过”才允许画 SHAP
 if st.session_state.feature_values is not None:
 
     if not st.session_state.shap_plot_generated:
@@ -213,19 +212,19 @@ if st.session_state.feature_values is not None:
         shap_values = explainer_shap.shap_values(X_input)
         expected_value = explainer_shap.expected_value
 
-        # 兼容 RandomForest 二分类
+        # ✅ RandomForest 二分类标准处理
         if isinstance(shap_values, list):
-            shap_vals = shap_values[1][0]  # ⭐ 核心修复点
+            shap_vals = shap_values[1][0]      # ⭐ 核心修复点
             base_value = expected_value[1]
         else:
-            shap_vals = shap_values
+            shap_vals = shap_values[0]
             base_value = expected_value
 
         plt.figure(figsize=(10, 6))
         shap.force_plot(
             base_value,
             shap_vals,
-            X_input,
+            X_input.iloc[0],
             matplotlib=True,
             show=False
         )
@@ -237,6 +236,7 @@ if st.session_state.feature_values is not None:
 
 else:
     st.info("请先点击 Predict 再查看 SHAP 解释")
+
 
     # # LIME 解释
     # st.subheader("LIME 解释")
@@ -266,6 +266,7 @@ else:
         st.session_state.shap_plot_generated = False
         st.rerun()
 # 🟢 新增结束
+
 
 
 
