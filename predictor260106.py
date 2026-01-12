@@ -118,6 +118,11 @@ with st.form("prediction_form"):
     submitted = st.form_submit_button("Predict")
 # 🟢 新增结束
 
+# 🟡 在还未预测时，提示用户点击 Predict
+if not st.session_state.prediction_made:
+    st.info("👉 请点击 **Predict** 按钮，生成预测结果")
+    st.warning("尚未生成预测结果，请点击 **Predict** 按钮")
+
 # 🔴 修改开始：当用户点击 "Predict" 按钮时执行以下代码（修改了条件判断）
 if submitted:
     # 处理输入数据并进行预测
@@ -253,6 +258,7 @@ if st.session_state.prediction_made:
         st.session_state.shap_plot_generated = False
         st.rerun()
 # 🟢 新增结束
+
 
 
 
