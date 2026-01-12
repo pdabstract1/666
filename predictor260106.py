@@ -180,7 +180,7 @@ if st.session_state.prediction_made:
     
     # 显示预测结果
     class_label = "患病" if st.session_state.predicted_class == 1 else "未患病"
-    st.write(f"**** {class_label}")
+    st.write(f"{class_label}")
     
     # 🟢 修改开始：仅显示类别为1的概率
     proba_class_1 = st.session_state.predicted_proba[1] * 100
@@ -193,27 +193,30 @@ if st.session_state.prediction_made:
     # SHAP 解释
     st.subheader("SHAP 力解释图")
 
-    # 只在第一次或需要重新生成时创建 SHAP 图
     if not st.session_state.shap_plot_generated:
-        # 创建 SHAP 解释器，基于树模型（如随机森林）
         explainer_shap = shap.TreeExplainer(model)
-        # 计算 SHAP 值，用于解释模型的预测
-        shap_values = explainer_shap.shap_values(pd.DataFrame([st.session_state.feature_values], columns=feature_names))
 
-        # 根据预测类别显示 SHAP 强制图
+        X_input = pd.DataFrame(
+            [st.session_state.feature_values],
+            columns=feature_names
+        )
+
+        shap_values = explainer_shap.shap_values(X_input)
+
         plt.figure(figsize=(10, 6))
-        if st.session_state.predicted_class == 1:
-            shap.force_plot(explainer_shap.expected_value[1], shap_values[:, :, 1],
-                            pd.DataFrame([st.session_state.feature_values], columns=feature_names),
-                            matplotlib=True, show=False)
-        else:
-            shap.force_plot(explainer_shap.expected_value[0], shap_values[:, :, 0],
-                            pd.DataFrame([st.session_state.feature_values], columns=feature_names),
-                            matplotlib=True, show=False)
 
-        plt.savefig("shap_force_plot.png", bbox_inches='tight', dpi=1200)
+        # ✅ 永远解释“阳性类（class=1）”
+        shap.force_plot(
+            explainer_shap.expected_value[1],
+            shap_values[1],
+            X_input,
+            matplotlib=True,
+            show=False
+        )
+
+        plt.savefig("shap_force_plot.png", bbox_inches="tight", dpi=300)
         st.session_state.shap_plot_generated = True
-
+        
     # 显示已保存的 SHAP 图
     st.image("shap_force_plot.png", caption='SHAP 力解释图')
 
@@ -245,5 +248,6 @@ if st.session_state.prediction_made:
         st.session_state.shap_plot_generated = False
         st.rerun()
 # 🟢 新增结束
+
 
 
