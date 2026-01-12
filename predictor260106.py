@@ -19,6 +19,12 @@ import matplotlib.pyplot as plt
 # 从 LIME 库中导入 LimeTabularExplainer，用于解释表格数据的机器学习模型
 from lime.lime_tabular import LimeTabularExplainer
 
+import streamlit.components.v1 as components
+
+def st_shap(plot, height=300):
+    """在 Streamlit 中显示 SHAP HTML 图"""
+    components.html(plot.html(), height=height)
+
 # 🔴 新增开始：初始化 session state
 if 'prediction_made' not in st.session_state:
     st.session_state.prediction_made = False
@@ -196,46 +202,47 @@ if st.session_state.prediction_made:
     st.write(st.session_state.advice)
     
 
-# ===== SHAP 解释（最终不再报错版）=====
+# ===== SHAP 解释（v0.20+ 正确写法）=====
 st.subheader("SHAP 力解释图")
 
 if st.session_state.feature_values is not None:
 
     if not st.session_state.shap_plot_generated:
+
         explainer_shap = shap.TreeExplainer(model)
 
-        X_input = pd.DataFrame(
-            [st.session_state.feature_values],
-            columns=feature_names
-        )
+        # 构建 DataFrame
+        X_input = pd.DataFrame([st.session_state.feature_values], columns=feature_names)
 
+        # 计算 SHAP 值
         shap_values = explainer_shap.shap_values(X_input)
         expected_value = explainer_shap.expected_value
 
-        # ✅ RandomForest 二分类标准处理
+        # RandomForest 二分类
         if isinstance(shap_values, list):
-            shap_vals = shap_values[1][0]      # ⭐ 核心修复点
+            # shap_values[1] 对应阳性类
+            shap_vals_to_plot = shap_values[1]   # shape = (1, n_features)
             base_value = expected_value[1]
         else:
-            shap_vals = shap_values[0]
+            shap_vals_to_plot = shap_values
             base_value = expected_value
 
-        plt.figure(figsize=(10, 6))
-        shap.force_plot(
+        # ✅ 新版 SHAP force_plot 调用方式
+        shap_html = shap.plots.force(
             base_value,
-            shap_vals,
-            X_input.iloc[0],
-            matplotlib=True,
-            show=False
+            shap_vals_to_plot,
+            feature_names=feature_names,
+            matplotlib=False,  # Streamlit 中用 HTML
         )
 
-        plt.savefig("shap_force_plot.png", bbox_inches="tight", dpi=300)
-        st.session_state.shap_plot_generated = True
+        # 显示到 Streamlit
+        st_shap(shap_html)  # 需要定义 st_shap 函数（见下面）
 
-    st.image("shap_force_plot.png", caption="SHAP 力解释图")
+        st.session_state.shap_plot_generated = True
 
 else:
     st.info("请先点击 Predict 再查看 SHAP 解释")
+
 
 
     # # LIME 解释
@@ -266,12 +273,5 @@ else:
         st.session_state.shap_plot_generated = False
         st.rerun()
 # 🟢 新增结束
-
-
-
-
-
-
-
 
 
