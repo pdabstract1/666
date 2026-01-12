@@ -86,18 +86,18 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-st.markdown(
-    """
-    <style>
-    .block-container {
-        max-width: 900px;
-        padding-top: 2rem;
-        padding-bottom: 2rem;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+# st.markdown(
+#     """
+#     <style>
+#     .block-container {
+#         max-width: 900px;
+#         padding-top: 2rem;
+#         padding-bottom: 2rem;
+#     }
+#     </style>
+#     """,
+#     unsafe_allow_html=True
+# )
 
 # max-width: 700px;   /* 很紧凑 */
 # max-width: 800px;   /* 推荐 */
@@ -282,6 +282,7 @@ if st.session_state.prediction_made:
         st.session_state.shap_plot_generated = False
         st.rerun()
 # 🟢 新增结束
+
 
 
 
