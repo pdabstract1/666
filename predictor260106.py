@@ -1,6 +1,39 @@
 # 导入 Streamlit 库，用于构建 Web 应用
 import streamlit as st
 
+# 导入 joblib 库，用于加载和保存机器学习模型
+import joblib
+
+# 导入 NumPy 库，用于数值计算
+import numpy as np
+
+# 导入 Pandas 库，用于数据处理和操作
+import pandas as pd
+
+# 导入 SHAP 库，用于解释机器学习模型的预测
+import shap
+
+# 导入 Matplotlib 库，用于数据可视化
+import matplotlib.pyplot as plt
+
+# 从 LIME 库中导入 LimeTabularExplainer，用于解释表格数据的机器学习模型
+from lime.lime_tabular import LimeTabularExplainer
+
+# 🔴 新增开始：初始化 session state
+if 'prediction_made' not in st.session_state:
+    st.session_state.prediction_made = False
+if 'predicted_class' not in st.session_state:
+    st.session_state.predicted_class = None
+if 'predicted_proba' not in st.session_state:
+    st.session_state.predicted_proba = None
+if 'advice' not in st.session_state:
+    st.session_state.advice = None
+if 'shap_plot_generated' not in st.session_state:
+    st.session_state.shap_plot_generated = False
+# 🟢 新增结束
+
+
+
 st.set_page_config(
     page_title="CRKP预测器",
     layout="wide"
@@ -51,36 +84,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# 导入 joblib 库，用于加载和保存机器学习模型
-import joblib
 
-# 导入 NumPy 库，用于数值计算
-import numpy as np
-
-# 导入 Pandas 库，用于数据处理和操作
-import pandas as pd
-
-# 导入 SHAP 库，用于解释机器学习模型的预测
-import shap
-
-# 导入 Matplotlib 库，用于数据可视化
-import matplotlib.pyplot as plt
-
-# 从 LIME 库中导入 LimeTabularExplainer，用于解释表格数据的机器学习模型
-from lime.lime_tabular import LimeTabularExplainer
-
-# 🔴 新增开始：初始化 session state
-if 'prediction_made' not in st.session_state:
-    st.session_state.prediction_made = False
-if 'predicted_class' not in st.session_state:
-    st.session_state.predicted_class = None
-if 'predicted_proba' not in st.session_state:
-    st.session_state.predicted_proba = None
-if 'advice' not in st.session_state:
-    st.session_state.advice = None
-if 'shap_plot_generated' not in st.session_state:
-    st.session_state.shap_plot_generated = False
-# 🟢 新增结束
 
 # 加载训练好的随机森林模型（RF.pkl）
 model = joblib.load('RF.pkl')
@@ -327,4 +331,5 @@ if st.session_state.prediction_made:
         st.session_state.shap_plot_generated = False
         st.rerun()
 # 🟢 新增结束
+
 
