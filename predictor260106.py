@@ -77,14 +77,14 @@ feature_names = [
     "X33",  # 白细胞
 ]
 # Streamlit 用户界面
-# st.title("CRKP预测器")  # 设置网页标题
+st.title("CRKP预测器")  # 设置网页标题
 
 
-st.set_page_config(
-    page_title="CRKP预测器",
-    layout="centered",   # 👈 页面居中并变窄
-    initial_sidebar_state="collapsed"
-)
+# st.set_page_config(
+#     page_title="CRKP预测器",
+#     layout="centered",   # 👈 页面居中并变窄
+#     initial_sidebar_state="collapsed"
+# )
 
 # st.markdown(
 #     """
@@ -296,6 +296,7 @@ if st.session_state.prediction_made:
         st.session_state.shap_plot_generated = False
         st.rerun()
 # 🟢 新增结束
+
 
 
 
