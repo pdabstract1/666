@@ -185,41 +185,46 @@ if st.session_state.prediction_made:
             
 
 # 🔹 SHAP 解释
-st.subheader("SHAP 力解释图（始终显示阳性类别）")
+    st.subheader("SHAP 力解释图（始终显示阳性类别）")
 
 # 只在第一次或需要重新生成时创建 SHAP 图
-if not st.session_state.shap_plot_generated:
-    # 封装输入为 DataFrame
-    input_df = pd.DataFrame([st.session_state.feature_values], columns=feature_names)
-
-    # 创建 TreeExplainer
-    explainer_shap = shap.TreeExplainer(model)
-
-    # 计算 SHAP 值（TreeExplainer 二分类返回 list）
-    shap_values = explainer_shap.shap_values(input_df)
-
-    # 🔹 只取阳性类别（类别1）
-    shap_values_pos = shap_values[1]
-    expected_value_pos = explainer_shap.expected_value[1]
-
-    # 绘制 SHAP 力图
-    plt.figure(figsize=(10, 6))
-    shap.force_plot(
-        expected_value=expected_value_pos,
-        shap_values=shap_values_pos,
-        features=input_df,
-        matplotlib=True,
-        show=False
-    )
-
-    # 保存图片
-    plt.savefig("shap_force_plot.png", bbox_inches='tight', dpi=1200)
-    st.session_state.shap_plot_generated = True
+    if not st.session_state.shap_plot_generated:
+        # 封装输入为 DataFrame
+        input_df = pd.DataFrame([st.session_state.feature_values], columns=feature_names)
+    
+        # 创建 TreeExplainer
+        explainer_shap = shap.TreeExplainer(model)
+    
+        # 计算 SHAP 值（TreeExplainer 二分类返回 list）
+        shap_values = explainer_shap.shap_values(input_df)
+    
+        # 🔹 只取阳性类别（类别1）
+        shap_values_pos = shap_values[1]
+        expected_value_pos = explainer_shap.expected_value[1]
+    
+        # 绘制 SHAP 力图
+        plt.figure(figsize=(10, 6))
+        shap.force_plot(
+            expected_value=expected_value_pos,
+            shap_values=shap_values_pos,
+            features=input_df,
+            matplotlib=True,
+            show=False
+        )
+    
+        # 保存图片
+        plt.savefig("shap_force_plot.png", bbox_inches='tight', dpi=1200)
+    
+        # 标记已生成
+        st.session_state.shap_plot_generated = True
 
 # 🔹 显示 SHAP 图
 # 预测概率始终显示为类别1概率
-st.image("shap_force_plot.png",
-         caption=f"SHAP 力解释图（阳性类别） - 患病概率: {st.session_state.predicted_proba[1]*100:.2f}%")
+    st.image(
+        "shap_force_plot.png",
+        caption=f"SHAP 力解释图（阳性类别） - 患病概率: {st.session_state.predicted_proba[1]*100:.2f}%"
+    )
+
 
 
 
@@ -252,4 +257,5 @@ st.image("shap_force_plot.png",
         st.session_state.shap_plot_generated = False
         st.rerun()
 # 🟢 新增结束
+
 
