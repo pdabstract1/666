@@ -75,25 +75,35 @@ if st.session_state.feature_values is not None and not st.session_state.shap_plo
     
     
     explainer = shap.TreeExplainer(model)
+
+    # 构建单条样本 DataFrame
     X_input = pd.DataFrame([st.session_state.feature_values], columns=feature_names)
+    
+    # 计算 SHAP 值
     shap_values = explainer.shap_values(X_input)
     expected_value = explainer.expected_value
     
-    # 二分类模型
+    # 对于二分类模型
     if isinstance(shap_values, list):
-        shap_vals_to_plot = shap_values[1][0]  # ✅ 这里必须 [0] 取第一条样本
-        base_value = expected_value[1]
+        # shap_values[1] 对应阳性类 (class 1)
+        # [0] 取第一条样本，变成 1D
+        shap_vals_to_plot = shap_values[1][0]  # shape = (n_features,)
+        base_value = expected_value[1]        # 标量
     else:
         shap_vals_to_plot = shap_values[0]
         base_value = expected_value
     
+    # 生成 HTML force_plot
     shap_html = shap.plots.force(
         base_value,
         shap_vals_to_plot,
         feature_names=feature_names,
-        matplotlib=False
+        matplotlib=False  # Streamlit 显示 HTML
     )
+    
+    # 显示
     st_shap(shap_html)
+
 
     st.session_state.shap_plot_generated = True
 elif st.session_state.feature_values is None:
@@ -104,4 +114,5 @@ if st.button("清除预测结果"):
     for key in ["prediction_made","predicted_class","predicted_proba","advice","shap_plot_generated","feature_values","features"]:
         st.session_state[key] = None
     st.experimental_rerun()
+
 
