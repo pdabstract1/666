@@ -184,22 +184,22 @@ if st.session_state.prediction_made:
 
     
 
-    # 🔹 SHAP 解释
+   # 🔹 SHAP 解释
     st.subheader("SHAP 力解释图（始终显示阳性类别）")
     
     # 只在第一次或需要重新生成时计算 SHAP 值
     if not st.session_state.shap_plot_generated:
-        # 创建 SHAP 解释器（树模型专用）
-        explainer_shap = shap.TreeExplainer(model)
-    
-        # 将用户输入特征封装为 DataFrame（兼容数值和分类特征）
+        # 封装用户输入为 DataFrame
         input_df = pd.DataFrame([st.session_state.feature_values], columns=feature_names)
     
-        # 计算 SHAP 值（TreeExplainer 返回 list，二分类为长度2）
+        # 创建 SHAP TreeExplainer
+        explainer_shap = shap.TreeExplainer(model)
+    
+        # 计算 SHAP 值（对于二分类，返回 list，长度=2）
         shap_values = explainer_shap.shap_values(input_df)
     
         # 🔹 只取阳性类别（类别1）的 SHAP 值
-        shap_values_pos = shap_values[1]  # 类别1对应的 SHAP 值
+        shap_values_pos = shap_values[1]          # 类别1的 SHAP 值
         expected_value_pos = explainer_shap.expected_value[1]  # 类别1的期望值
     
         # 绘制 SHAP 力图（matplotlib 输出）
@@ -212,12 +212,13 @@ if st.session_state.prediction_made:
             show=False
         )
     
-        # 保存图片，供 Streamlit 显示
+        # 保存图片
         plt.savefig("shap_force_plot.png", bbox_inches='tight', dpi=1200)
         st.session_state.shap_plot_generated = True
     
-    # 显示已生成的 SHAP 图
+    # 显示 SHAP 图
     st.image("shap_force_plot.png", caption="SHAP 力解释图（阳性类别）")
+
 
 
     # # LIME 解释
@@ -248,5 +249,6 @@ if st.session_state.prediction_made:
         st.session_state.shap_plot_generated = False
         st.rerun()
 # 🟢 新增结束
+
 
 
