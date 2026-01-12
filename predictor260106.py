@@ -125,9 +125,9 @@ if submitted:
     features = np.array([feature_values])  # 将特征转换为 NumPy 数组，适用于模型输入
 
     # 预测类别（0：无败血症，1：有败血症）
-    predicted_class = model.predict(features)[1]
+    predicted_class = model.predict(features)[0]
     # 预测类别的概率
-    predicted_proba = model.predict_proba(features)[1]
+    predicted_proba = model.predict_proba(features)[0]
 
     # 🔴 新增开始：保存预测结果到 session state
     st.session_state.prediction_made = True
@@ -189,8 +189,9 @@ if st.session_state.prediction_made:
 
     # 显示建议
     st.write(st.session_state.advice)
+    
 
-  # SHAP 解释
+# ===== SHAP 解释（最终稳妥版）=====
 st.subheader("SHAP 力解释图")
 
 if not st.session_state.shap_plot_generated:
@@ -202,21 +203,19 @@ if not st.session_state.shap_plot_generated:
     )
 
     shap_values = explainer_shap.shap_values(X_input)
+    expected_value = explainer_shap.expected_value
 
-    # ✅ 关键：兼容所有 SHAP 返回格式
+    # 兼容所有 SHAP 返回结构
     if isinstance(shap_values, list):
-        # 二分类（list），永远取阳性类
-        shap_vals_to_plot = shap_values[1]
-        expected_value = explainer_shap.expected_value[1]
+        shap_vals_to_plot = shap_values[1]          # 阳性类
+        base_value = expected_value[1]
     else:
-        # 新版 SHAP：已经是阳性类
-        shap_vals_to_plot = shap_values
-        expected_value = explainer_shap.expected_value
+        shap_vals_to_plot = shap_values              # 已经是阳性
+        base_value = expected_value
 
     plt.figure(figsize=(10, 6))
-
     shap.force_plot(
-        expected_value,
+        base_value,
         shap_vals_to_plot,
         X_input,
         matplotlib=True,
@@ -225,6 +224,7 @@ if not st.session_state.shap_plot_generated:
 
     plt.savefig("shap_force_plot.png", bbox_inches="tight", dpi=300)
     st.session_state.shap_plot_generated = True
+
 
     
     # 显示已保存的 SHAP 图
@@ -258,6 +258,7 @@ if not st.session_state.shap_plot_generated:
         st.session_state.shap_plot_generated = False
         st.rerun()
 # 🟢 新增结束
+
 
 
 
